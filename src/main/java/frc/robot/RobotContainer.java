@@ -6,12 +6,19 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+
+import com.pathplanner.lib.PathPlanner;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.TrajFollowing;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 /**
@@ -60,14 +67,26 @@ public class RobotContainer {
   }
 
   /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return new InstantCommand();
-  }
+	 * Use this to pass the autonomous command to the main {@link Robot} class.
+	 *
+	 * @return the command to run in autonomous
+	 */
+	public Command getAutonomousCommand() {
+		PIDController xController = new PIDController(2, 0, 0);
+		PIDController yController = new PIDController(2, 0, 0);
+		ProfiledPIDController thetaController = new ProfiledPIDController(50, 0, 0,
+				new TrapezoidProfile.Constraints(4*Math.PI, 4*Math.PI));
+
+		var traj = PathPlanner.loadPath("Test", 6.0, 3.0);
+		m_drivetrainSubsystem.resetOdometry(traj.getInitialPose());
+
+		var autonomousCommand = new TrajFollowing(m_drivetrainSubsystem,
+				traj, () -> m_drivetrainSubsystem.getPose(), m_drivetrainSubsystem.m_kinematics, xController, yController,
+				thetaController, (states) -> {
+					m_drivetrainSubsystem.drive(m_drivetrainSubsystem.m_kinematics.toChassisSpeeds(states));
+				}, m_drivetrainSubsystem).andThen(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0, 0, 0)));
+		return autonomousCommand;
+	}
 
   private static double deadband(double value, double deadband) {
     if (Math.abs(value) > deadband) {
