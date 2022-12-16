@@ -204,6 +204,10 @@ public Rotation2d getHeading() {
 return m_navx.getRotation2d();
 }
 
+public void stop(){
+        drive(new ChassisSpeeds(0, 0, 0));
+}
+
   @Override
   public void periodic() {
     SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
@@ -213,8 +217,4 @@ return m_navx.getRotation2d();
         m_swerveModules[i].set(states[i].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[i].angle.getRadians());
     }
   }
-
-public Object stop() {
-    return null;
-}
 }

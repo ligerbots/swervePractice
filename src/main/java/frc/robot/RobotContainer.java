@@ -84,7 +84,7 @@ public class RobotContainer {
 				traj, () -> m_drivetrainSubsystem.getPose(), m_drivetrainSubsystem.m_kinematics, xController, yController,
 				thetaController, (states) -> {
 					m_drivetrainSubsystem.drive(m_drivetrainSubsystem.m_kinematics.toChassisSpeeds(states));
-				}, m_drivetrainSubsystem).andThen(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(0, 0, 0)));
+				}, m_drivetrainSubsystem).andThen(() -> m_drivetrainSubsystem.stop());
 		return autonomousCommand;
 	}
 
