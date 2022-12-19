@@ -17,7 +17,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -55,7 +54,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
           Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
-  public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
+  private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
           // Front left
           new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
           // Front right
@@ -70,9 +69,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   // By default we use a Pigeon for our gyroscope. But if you use another gyroscope, like a NavX, you can change this.
   // The important thing about how you configure your gyroscope is that rotating the robot counter-clockwise should
   // cause the angle reading to increase until it wraps back over to zero.
-  // FIXME Remove if you are using a Pigeon
-  // private final PigeonIMU m_pigeon = new PigeonIMU(DRIVETRAIN_NAVX_ID);
-  // FIXME Uncomment if you are using a NavX
   private final AHRS m_navx = new AHRS(Port.kMXP, (byte) 200); // NavX connected over MXP
 
   // These are our modules. We initialize them in the constructor.
@@ -80,31 +76,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
-  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, m_navx.getRotation2d());
+  private SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, m_navx.getRotation2d());
 
   public DrivetrainSubsystem() {
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
-    // There are 4 methods you can call to create your swerve modules.
-    // The method you use depends on what motors you are using.
-    //
-    // Mk3SwerveModuleHelper.createFalcon500(...)
-    //   Your module has two Falcon 500s on it. One for steering and one for driving.
-    //
-    // Mk3SwerveModuleHelper.createNeo(...)
-    //   Your module has two NEOs on it. One for steering and one for driving.
-    //
-    // Mk3SwerveModuleHelper.createFalcon500Neo(...)
-    //   Your module has a Falcon 500 and a NEO on it. The Falcon 500 is for driving and the NEO is for steering.
-    //
-    // Mk3SwerveModuleHelper.createNeoFalcon500(...)
-    //   Your module has a NEO and a Falcon 500 on it. The NEO is for driving and the Falcon 500 is for steering.
-    //
-    // Similar helpers also exist for Mk4 modules using the Mk4SwerveModuleHelper class.
-
-    // By default we will use Falcon 500s in standard configuration. But if you use a different configuration or motors
-    // you MUST change it. If you do not, your code will crash on startup.
-    // FIXME Setup motor configuration
     m_swerveModules[0] = Mk4iSwerveModuleHelper.createNeo(
             // This parameter is optional, but will allow you to see the current state of the module on the dashboard.
             tab.getLayout("Front Left Module", BuiltInLayouts.kList)
@@ -162,10 +138,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * 'forwards' direction.
    */
   public void zeroGyroscope() {
-    // FIXME Remove if you are using a Pigeon
-    // m_pigeon.setFusedHeading(0.0);
-
-    // FIXME Uncomment if you are using a NavX
     m_navx.zeroYaw();
   }
 
@@ -174,14 +146,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 }
 
   public Rotation2d getGyroscopeRotation() {
-    // FIXME Remove if you are using a Pigeon
-    // return Rotation2d.fromDegrees(m_pigeon.getFusedHeading());
 
-    // FIXME Uncomment if you are using a NavX
     if (m_navx.isMagnetometerCalibrated()) {
       // We will only get valid fused headings if the magnetometer is calibrated
       return Rotation2d.fromDegrees(m_navx.getFusedHeading());
     }
+
 
     // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
     return Rotation2d.fromDegrees(360.0 - m_navx.getYaw());
@@ -196,17 +166,21 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * @param pose The pose to which to set the odometry.
    */
   public void resetOdometry(Pose2d pose) {
-        zeroGyroscope();
-        m_odometry.resetPosition(pose, getHeading());
-}
+    zeroGyroscope();
+    m_odometry.resetPosition(pose, getHeading());
+  }
 
-public Rotation2d getHeading() {
-return m_navx.getRotation2d();
-}
+  public Rotation2d getHeading() {
+    return m_navx.getRotation2d();
+  }
 
-public void stop(){
-        drive(new ChassisSpeeds(0, 0, 0));
-}
+  public SwerveDriveKinematics getKinematics() {
+    return m_kinematics;
+  }
+
+  public void stop() {
+    drive(new ChassisSpeeds(0, 0, 0));
+  }
 
   @Override
   public void periodic() {

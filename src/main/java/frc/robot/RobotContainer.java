@@ -11,11 +11,8 @@ import com.pathplanner.lib.PathPlanner;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.TrajFollowing;
@@ -81,9 +78,9 @@ public class RobotContainer {
 		m_drivetrainSubsystem.resetOdometry(traj.getInitialPose());
 
 		var autonomousCommand = new TrajFollowing(m_drivetrainSubsystem,
-				traj, () -> m_drivetrainSubsystem.getPose(), m_drivetrainSubsystem.m_kinematics, xController, yController,
+				traj, () -> m_drivetrainSubsystem.getPose(), m_drivetrainSubsystem.getKinematics(), xController, yController,
 				thetaController, (states) -> {
-					m_drivetrainSubsystem.drive(m_drivetrainSubsystem.m_kinematics.toChassisSpeeds(states));
+					m_drivetrainSubsystem.drive(m_drivetrainSubsystem.getKinematics().toChassisSpeeds(states));
 				}, m_drivetrainSubsystem).andThen(() -> m_drivetrainSubsystem.stop());
 		return autonomousCommand;
 	}
