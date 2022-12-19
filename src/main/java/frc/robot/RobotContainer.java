@@ -77,6 +77,7 @@ public class RobotContainer {
 		var traj = PathPlanner.loadPath("Test", 6.0, 3.0);
 		m_drivetrainSubsystem.resetOdometry(traj.getInitialPose());
 
+    // TODO: do we need to add m_driveTrainSubsystem as a requirement, to cancel the DriveCommand?
 		var autonomousCommand = new TrajFollowing(m_drivetrainSubsystem,
 				traj, () -> m_drivetrainSubsystem.getPose(), m_drivetrainSubsystem.getKinematics(), xController, yController,
 				thetaController, (states) -> {
