@@ -74,7 +74,7 @@ public class RobotContainer {
 		ProfiledPIDController thetaController = new ProfiledPIDController(50, 0, 0,
 				new TrapezoidProfile.Constraints(4*Math.PI, 4*Math.PI));
 
-		var traj = PathPlanner.loadPath("Test", 6.0, 3.0);
+		var traj = PathPlanner.loadPath("short drive", 3.0, 1.0);
 		m_drivetrainSubsystem.resetOdometry(traj.getInitialPose());
 
 		var autonomousCommand = new TrajFollowing(m_drivetrainSubsystem,
