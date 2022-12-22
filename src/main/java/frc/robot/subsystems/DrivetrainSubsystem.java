@@ -167,7 +167,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * @param pose The pose to which to set the odometry.
    */
   public void setPose(Pose2d pose) {
-    zeroGyroscope();
+    // zeroGyroscope();   resetPosition says not to reset gyro
     m_odometry.resetPosition(pose, getHeading());
   }
 
