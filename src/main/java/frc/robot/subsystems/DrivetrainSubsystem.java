@@ -138,7 +138,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * Sets the gyroscope angle to zero. This can be used to set the direction the robot is currently facing to the
    * 'forwards' direction.
    */
-  // This should not be done without resetting the odometry. For now, leave out
+  // This is wrong. You need to reset the odometry if you really need to do this
   // public void zeroGyroscope() {
   //   m_navx.zeroYaw();
   // }
@@ -186,10 +186,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
 
     m_odometry.update(getGyroscopeRotation(), states);
-    
+
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
     for(int i = 0; i < 4; i++){
         m_swerveModules[i].set(states[i].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[i].angle.getRadians());
     }
