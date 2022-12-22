@@ -171,6 +171,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     m_odometry.resetPosition(pose, getHeading());
   }
 
+  // PaulR: this should probably be the odometry heading, and then we need a separate gyro method (maybe private)
   public Rotation2d getHeading() {
     return m_navx.getRotation2d();
   }
