@@ -70,22 +70,33 @@ public class RobotContainer {
 	 * @return the command to run in autonomous
 	 */
 	public Command getAutonomousCommand() {
+    // ***
+    // Most of this code should be moved into the TrajFollowing command or DriveTrain subsystem
+    // ***
 		PIDController xController = new PIDController(2, 0, 0);
 		PIDController yController = new PIDController(2, 0, 0);
 		ProfiledPIDController thetaController = new ProfiledPIDController(50, 0, 0,
-				new TrapezoidProfile.Constraints(4*Math.PI, 4*Math.PI));
+            new TrapezoidProfile.Constraints(4 * Math.PI, 4 * Math.PI));
 
-		var traj = PathPlanner.loadPath("short drive", 3.0, 1.0);
+		var traj = PathPlanner.loadPath("drive_1m", 3.0, 1.0);
 		m_drivetrainSubsystem.setPose(traj.getInitialPose());
 
-    // TODO: do we need to add m_driveTrainSubsystem as a requirement, to cancel the DriveCommand?
-		var autonomousCommand = new TrajFollowing(m_drivetrainSubsystem,
-				traj, () -> m_drivetrainSubsystem.getPose(), m_drivetrainSubsystem.getKinematics(), xController, yController,
-				thetaController, (states) -> {
-					m_drivetrainSubsystem.drive(m_drivetrainSubsystem.getKinematics().toChassisSpeeds(states));
-				}, m_drivetrainSubsystem).andThen(() -> m_drivetrainSubsystem.stop());
-		return autonomousCommand;
-	}
+    var autonomousCommand = new TrajFollowing(
+        m_drivetrainSubsystem,
+        traj,
+        () -> m_drivetrainSubsystem.getPose(),
+        m_drivetrainSubsystem.getKinematics(),
+        xController,
+        yController,
+        thetaController,
+        (states) -> {
+          m_drivetrainSubsystem.drive(m_drivetrainSubsystem.getKinematics().toChassisSpeeds(states));
+        },
+        m_drivetrainSubsystem
+    ).andThen(() -> m_drivetrainSubsystem.stop());
+
+    return autonomousCommand;
+  }
 
   private static double deadband(double value, double deadband) {
     if (Math.abs(value) > deadband) {
