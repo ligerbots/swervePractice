@@ -75,7 +75,7 @@ public class RobotContainer {
 				new TrapezoidProfile.Constraints(4*Math.PI, 4*Math.PI));
 
 		var traj = PathPlanner.loadPath("short drive", 3.0, 1.0);
-		m_drivetrainSubsystem.resetOdometry(traj.getInitialPose());
+		m_drivetrainSubsystem.setPose(traj.getInitialPose());
 
 		var autonomousCommand = new TrajFollowing(m_drivetrainSubsystem,
 				traj, () -> m_drivetrainSubsystem.getPose(), m_drivetrainSubsystem.getKinematics(), xController, yController,
