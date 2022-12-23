@@ -186,12 +186,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    System.out.println("*** DriveTrain PERIODIC ***");
     Pose2d pose = getPose();
 
     SmartDashboard.putNumber("drivetrain/xposition", pose.getX());
     SmartDashboard.putNumber("drivetrain/yposition", pose.getY());
-    SmartDashboard.putNumber("drivetrain/header", pose.getRotation().getDegrees());
+    SmartDashboard.putNumber("drivetrain/heading", pose.getRotation().getDegrees());
 
     SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
 
