@@ -6,12 +6,16 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
+
+import com.pathplanner.lib.PathPlanner;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.TrajFollowing;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 /**
@@ -54,19 +58,44 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Back button zeros the gyroscope
-    new Button(m_controller::getBackButton)
-            // No requirements because we don't need to interrupt anything
-            .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
+    // Need proper implementation first. See drivetrain code
+    // new Button(m_controller::getBackButton)
+    //         // No requirements because we don't need to interrupt anything
+    //         .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
   }
 
   /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return new InstantCommand();
+	 * Use this to pass the autonomous command to the main {@link Robot} class.
+	 *
+	 * @return the command to run in autonomous
+	 */
+	public Command getAutonomousCommand() {
+    // ***
+    // Most of this code should be moved into the TrajFollowing command or DriveTrain subsystem
+    // ***
+		PIDController xController = new PIDController(0.2, 0, 0);
+		PIDController yController = new PIDController(0.2, 0, 0);
+		ProfiledPIDController thetaController = new ProfiledPIDController(8, 0, 0,
+            new TrapezoidProfile.Constraints(4 * Math.PI, 4 * Math.PI));
+
+		var traj = PathPlanner.loadPath("drive_1m", 2.0, 1.0);
+		m_drivetrainSubsystem.setPose(traj.getInitialPose());
+
+    var autonomousCommand = new TrajFollowing(
+        m_drivetrainSubsystem,
+        traj,
+        () -> m_drivetrainSubsystem.getPose(),
+        m_drivetrainSubsystem.getKinematics(),
+        xController,
+        yController,
+        thetaController,
+        (states) -> {
+          m_drivetrainSubsystem.drive(m_drivetrainSubsystem.getKinematics().toChassisSpeeds(states));
+        },
+        m_drivetrainSubsystem
+    ).andThen(() -> m_drivetrainSubsystem.stop());
+
+    return autonomousCommand;
   }
 
   private static double deadband(double value, double deadband) {
