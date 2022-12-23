@@ -20,6 +20,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.*;
@@ -187,6 +188,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    Pose2d pose = getPose();
+
+    SmartDashboard.putNumber("drivetrain/xposition", pose.getX());
+    SmartDashboard.putNumber("drivetrain/yposition", pose.getY());
+    SmartDashboard.putNumber("drivetrain/heading", pose.getRotation().getDegrees());
+
     SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
 
     m_odometry.update(getGyroscopeRotation(), states);

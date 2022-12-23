@@ -73,12 +73,12 @@ public class RobotContainer {
     // ***
     // Most of this code should be moved into the TrajFollowing command or DriveTrain subsystem
     // ***
-		PIDController xController = new PIDController(2, 0, 0);
-		PIDController yController = new PIDController(2, 0, 0);
-		ProfiledPIDController thetaController = new ProfiledPIDController(50, 0, 0,
+		PIDController xController = new PIDController(0.2, 0, 0);
+		PIDController yController = new PIDController(0.2, 0, 0);
+		ProfiledPIDController thetaController = new ProfiledPIDController(8, 0, 0,
             new TrapezoidProfile.Constraints(4 * Math.PI, 4 * Math.PI));
 
-		var traj = PathPlanner.loadPath("drive_1m", 3.0, 1.0);
+		var traj = PathPlanner.loadPath("drive_and_turn", 5.0, 2.0);
 		m_drivetrainSubsystem.setPose(traj.getInitialPose());
 
     var autonomousCommand = new TrajFollowing(
