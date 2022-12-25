@@ -30,6 +30,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * <p>
    * This can be reduced to cap the robot's maximum speed. Typically, this is useful during initial testing of the robot.
    */
+  private boolean m_fieldRelative = true;
+
   public static final double MAX_VOLTAGE = 12.0;
   // FIXME Measure the drivetrain's maximum velocity or calculate the theoretical.
   //  The formula for calculating the theoretical maximum velocity is:
@@ -183,6 +185,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
     drive(new ChassisSpeeds(0, 0, 0));
   }
 
+  public boolean getDriveMode() {
+    return m_fieldRelative;
+  }
+
+  public void toggleDriveMode() {
+    m_fieldRelative = !m_fieldRelative;
+  }
+  
   @Override
   public void periodic() {
     SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
