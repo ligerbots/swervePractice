@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.ToggleButtonCommand;
+import frc.robot.commands.ToggleFieldRelative;
 import frc.robot.commands.TrajFollowing;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
@@ -65,8 +65,8 @@ public class RobotContainer {
             .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
 
     JoystickButton xboxAButton = new JoystickButton(m_controller, 1); //buton A
-    xboxAButton.whenPressed(new ToggleButtonCommand(m_drivetrainSubsystem));
-    //when button A is pressed make a new toggle command to toggle
+    xboxAButton.whenPressed(new ToggleFieldRelative(m_drivetrainSubsystem));
+    //when button A is pressed make a new toggle command to toggle mode
   }
 
   /**
