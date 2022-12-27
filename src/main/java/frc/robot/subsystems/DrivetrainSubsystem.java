@@ -34,6 +34,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * This can be reduced to cap the robot's maximum speed. Typically, this is useful during initial testing of the robot.
    */
   public static final double MAX_VOLTAGE = 12.0;
+
+  private boolean m_fieldRelative = true; //var that controls if the robot is in field relative or robot centric mode
+  //if var = true, then robot is in field relative mode
+
+
   // FIXME Measure the drivetrain's maximum velocity or calculate the theoretical.
   //  The formula for calculating the theoretical maximum velocity is:
   //   <Motor free speed RPM> / 60 * <Drive reduction> * <Wheel diameter meters> * pi
@@ -184,6 +189,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
     drive(new ChassisSpeeds(0, 0, 0));
   }
 
+  public boolean getFieldRelative() { //gets if in field relative mode
+    return m_fieldRelative;
+  }
+
+  public void toggleFieldRelative() { //flips mode of robot
+    m_fieldRelative = !m_fieldRelative;
+  }
+  
   @Override
   public void periodic() {
     Pose2d pose = getPose();
