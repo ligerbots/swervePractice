@@ -60,7 +60,9 @@ public class TrajFollowing extends CommandBase {
      *                           controllers.
      * @param requirements       The subsystems to require.
      */
-    @SuppressWarnings("ParameterName")
+
+    // TODO: this is way too many parameters. All of this should be part of the Traj command or DriveTrain
+    // Probably should just be robotDrive and trajectory; not sure if we need requirements.
     public TrajFollowing(DrivetrainSubsystem robotDrive,
             PathPlannerTrajectory trajectory,
             Supplier<Pose2d> pose,

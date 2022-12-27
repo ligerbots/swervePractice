@@ -60,9 +60,9 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Back button zeros the gyroscope
-    new Button(m_controller::getBackButton)
+    /*new Button(m_controller::getBackButton)
             // No requirements because we don't need to interrupt anything
-            .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
+            .whenPressed(m_drivetrainSubsystem::zeroGyroscope);*/
 
     JoystickButton xboxAButton = new JoystickButton(m_controller, 1); //buton A
     xboxAButton.whenPressed(new ToggleFieldRelative(m_drivetrainSubsystem));
@@ -75,21 +75,33 @@ public class RobotContainer {
 	 * @return the command to run in autonomous
 	 */
 	public Command getAutonomousCommand() {
-		PIDController xController = new PIDController(2, 0, 0);
-		PIDController yController = new PIDController(2, 0, 0);
-		ProfiledPIDController thetaController = new ProfiledPIDController(50, 0, 0,
-				new TrapezoidProfile.Constraints(4*Math.PI, 4*Math.PI));
+    // ***
+    // Most of this code should be moved into the TrajFollowing command or DriveTrain subsystem
+    // ***
+		PIDController xController = new PIDController(0.2, 0, 0);
+		PIDController yController = new PIDController(0.2, 0, 0);
+		ProfiledPIDController thetaController = new ProfiledPIDController(8, 0, 0,
+            new TrapezoidProfile.Constraints(4 * Math.PI, 4 * Math.PI));
 
-		var traj = PathPlanner.loadPath("short drive", 3.0, 1.0);
-		m_drivetrainSubsystem.resetOdometry(traj.getInitialPose());
+		var traj = PathPlanner.loadPath("drive_1m", 2.0, 1.0);
+		m_drivetrainSubsystem.setPose(traj.getInitialPose());
 
-		var autonomousCommand = new TrajFollowing(m_drivetrainSubsystem,
-				traj, () -> m_drivetrainSubsystem.getPose(), m_drivetrainSubsystem.getKinematics(), xController, yController,
-				thetaController, (states) -> {
-					m_drivetrainSubsystem.drive(m_drivetrainSubsystem.getKinematics().toChassisSpeeds(states));
-				}, m_drivetrainSubsystem).andThen(() -> m_drivetrainSubsystem.stop());
-		return autonomousCommand;
-	}
+    var autonomousCommand = new TrajFollowing(
+        m_drivetrainSubsystem,
+        traj,
+        () -> m_drivetrainSubsystem.getPose(),
+        m_drivetrainSubsystem.getKinematics(),
+        xController,
+        yController,
+        thetaController,
+        (states) -> {
+          m_drivetrainSubsystem.drive(m_drivetrainSubsystem.getKinematics().toChassisSpeeds(states));
+        },
+        m_drivetrainSubsystem
+    ).andThen(() -> m_drivetrainSubsystem.stop());
+
+    return autonomousCommand;
+  }
 
   private static double deadband(double value, double deadband) {
     if (Math.abs(value) > deadband) {
