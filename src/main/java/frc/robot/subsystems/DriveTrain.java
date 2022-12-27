@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.*;
 
-public class DrivetrainSubsystem extends SubsystemBase {
+public class DriveTrain extends SubsystemBase {
   /**
    * The maximum voltage that will be delivered to the drive motors.
    * <p>
@@ -83,8 +83,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   // These are our modules. We initialize them in the constructor.
   private final SwerveModule[] m_swerveModules = new SwerveModule[4];
 
-  private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-
   private final SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
     getGyroscopeRotation(),
     new Pose2d(),
@@ -93,7 +91,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     VecBuilder.fill(0.05),
     VecBuilder.fill(0.1, 0.1, 0.1));
 
-  public DrivetrainSubsystem() {
+  public DriveTrain() {
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
     m_swerveModules[0] = Mk4iSwerveModuleHelper.createNeo(
@@ -164,7 +162,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
-    m_chassisSpeeds = chassisSpeeds;
+    SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(chassisSpeeds);
+
+    m_odometry.update(getGyroscopeRotation(), states);
+
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
+    for(int i = 0; i < 4; i++){
+        m_swerveModules[i].set(states[i].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[i].angle.getRadians());
+    }
   }
 
   /**
@@ -185,6 +190,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return m_kinematics;
   }
 
+  // future changes: maybe leave the modules in the angles remain the same instead of pointint at 0
   public void stop() {
     drive(new ChassisSpeeds(0, 0, 0));
   }
@@ -196,22 +202,24 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public void toggleFieldRelative() { //flips mode of robot
     m_fieldRelative = !m_fieldRelative;
   }
+
+  // get the swerveModuleState manually
+  public SwerveModuleState[] getModuleState(){
+    SwerveModuleState[] state = new SwerveModuleState[4];
+    for(int i = 0; i < 4; i++){
+      state[i] = new SwerveModuleState(m_swerveModules[i].getDriveVelocity(), Rotation2d.fromDegrees(m_swerveModules[i].getSteerAngle()));
+    }
+    return state;
+  }
   
   @Override
   public void periodic() {
-    Pose2d pose = getPose();
-
+    Pose2d pose = m_odometry.update(getGyroscopeRotation(), getModuleState());
+    
     SmartDashboard.putNumber("drivetrain/xposition", pose.getX());
     SmartDashboard.putNumber("drivetrain/yposition", pose.getY());
     SmartDashboard.putNumber("drivetrain/heading", pose.getRotation().getDegrees());
 
-    SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
-
-    m_odometry.update(getGyroscopeRotation(), states);
-
-    SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
-    for(int i = 0; i < 4; i++){
-        m_swerveModules[i].set(states[i].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[i].angle.getRadians());
-    }
+    SmartDashboard.putString("drivetrain/driveMode", m_fieldRelative ? "field-centric" : "robot-centric");
   }
 }

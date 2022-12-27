@@ -19,9 +19,9 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.DriveTrain;
 
-public class TrajFollowing extends CommandBase {
+public class FollowTrajectory extends CommandBase {
 
 	private final Timer m_timer = new Timer();
 	private final PathPlannerTrajectory m_trajectory;
@@ -30,7 +30,7 @@ public class TrajFollowing extends CommandBase {
 	private final HolonomicDriveController m_controller;
 	private final Consumer<SwerveModuleState[]> m_outputModuleStates;
 
-	DrivetrainSubsystem m_robotDrive;
+	DriveTrain m_robotDrive;
 
 	/**
      * Constructs a new PPSwerveControllerCommand that when executed will follow the
@@ -63,7 +63,7 @@ public class TrajFollowing extends CommandBase {
 
     // TODO: this is way too many parameters. All of this should be part of the Traj command or DriveTrain
     // Probably should just be robotDrive and trajectory; not sure if we need requirements.
-    public TrajFollowing(DrivetrainSubsystem robotDrive,
+    public FollowTrajectory(DriveTrain robotDrive,
             PathPlannerTrajectory trajectory,
             Supplier<Pose2d> pose,
             SwerveDriveKinematics kinematics,
