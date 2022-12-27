@@ -51,6 +51,10 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 12;
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(91.8);
 
+    public static final double X_PID_CONTROLLER_P = 0.2;
+    public static final double Y_PID_CONTROLLER_P = 0.2;
+    public static final double THETA_PID_CONTROLLER_P = 8.0;
+
     // Xbox button mapping
     public static final int XBOX_A = 1;
     public static final int XBOX_B = 2;
@@ -67,4 +71,6 @@ public final class Constants {
     // joy stick button
     public static final int XBOX_JL = 9;
     public static final int XBOX_JR = 10;
+
+
 }

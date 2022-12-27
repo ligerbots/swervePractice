@@ -30,7 +30,7 @@ public class FollowTrajectory extends CommandBase {
 	private final HolonomicDriveController m_controller;
 	private final Consumer<SwerveModuleState[]> m_outputModuleStates;
 
-	DriveTrain m_robotDrive;
+	DriveTrain m_driveTrain;
 
 	/**
      * Constructs a new PPSwerveControllerCommand that when executed will follow the
@@ -63,7 +63,7 @@ public class FollowTrajectory extends CommandBase {
 
     // TODO: this is way too many parameters. All of this should be part of the Traj command or DriveTrain
     // Probably should just be robotDrive and trajectory; not sure if we need requirements.
-    public FollowTrajectory(DriveTrain robotDrive,
+    public FollowTrajectory(DriveTrain driveTrain,
             PathPlannerTrajectory trajectory,
             Supplier<Pose2d> pose,
             SwerveDriveKinematics kinematics,
@@ -72,7 +72,7 @@ public class FollowTrajectory extends CommandBase {
             ProfiledPIDController thetaController,
             Consumer<SwerveModuleState[]> outputModuleStates,
             Subsystem... requirements) {
-		m_robotDrive = robotDrive;
+        m_driveTrain = driveTrain;
         m_trajectory = trajectory;
         m_pose = pose;
         m_kinematics = kinematics;
@@ -92,6 +92,7 @@ public class FollowTrajectory extends CommandBase {
 	public void initialize() {
 		m_timer.reset();
 		m_timer.start();
+        m_driveTrain.setPose(m_trajectory.getInitialPose());
 	}
 
 	// Called every time the scheduler runs while the command is scheduled.

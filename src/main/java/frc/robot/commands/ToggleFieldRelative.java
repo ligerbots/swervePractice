@@ -14,16 +14,16 @@ import frc.robot.subsystems.DriveTrain;
 //this command changes back and forth between field relative mode and not field relative mode(robot centric)
 public class ToggleFieldRelative extends InstantCommand 
 {
-  private final DriveTrain m_drivetrainSubsystem;
-  public ToggleFieldRelative(DriveTrain drivetrainSubsystem) {
+  private final DriveTrain m_driveTrain;
+  public ToggleFieldRelative(DriveTrain driveTrain) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_drivetrainSubsystem = drivetrainSubsystem;
+    m_driveTrain = driveTrain;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_drivetrainSubsystem.toggleFieldRelative(); //toggle drive mode
+    m_driveTrain.toggleFieldRelative(); //toggle drive mode
   }
 
   

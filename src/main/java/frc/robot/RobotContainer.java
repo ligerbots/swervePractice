@@ -21,107 +21,85 @@ import frc.robot.commands.FollowTrajectory;
 import frc.robot.subsystems.DriveTrain;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final DriveTrain m_drivetrainSubsystem = new DriveTrain();
+	// The robot's subsystems and commands are defined here...
+	private final DriveTrain m_driveTrain = new DriveTrain();
 
-  private final XboxController m_controller = new XboxController(0);
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
-  public RobotContainer() {
+	private final XboxController m_controller = new XboxController(0);
 
-    // Configure the button bindings
-    configureButtonBindings();
-  }
-
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  private void configureButtonBindings() {
-    // Back button zeros the gyroscope
-    /*new Button(m_controller::getBackButton)
-            // No requirements because we don't need to interrupt anything
-            .whenPressed(m_drivetrainSubsystem::zeroGyroscope);*/
-
-    JoystickButton xboxAButton = new JoystickButton(m_controller, Constants.XBOX_A); //buton A
-    xboxAButton.whenPressed(new ToggleFieldRelative(m_drivetrainSubsystem));
-    //when button A is pressed make a new toggle command to toggle mode
-  }
-
-  /**
-	 * Use this to pass the autonomous command to the main {@link Robot} class.
-	 *
-	 * @return the command to run in autonomous
+	/**
+	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
-	public Command getAutonomousCommand() {
-    // ***
-    // Most of this code should be moved into the TrajFollowing command or DriveTrain subsystem
-    // ***
-		PIDController xController = new PIDController(0.2, 0, 0);
-		PIDController yController = new PIDController(0.2, 0, 0);
-		ProfiledPIDController thetaController = new ProfiledPIDController(8, 0, 0,
-            new TrapezoidProfile.Constraints(4 * Math.PI, 4 * Math.PI));
+	public RobotContainer() {
 
-		var traj = PathPlanner.loadPath("drive_1m", 2.0, 1.0);
-		m_drivetrainSubsystem.setPose(traj.getInitialPose());
+		// Configure the button bindings
+		configureButtonBindings();
+	}
 
-    var autonomousCommand = new FollowTrajectory(
-        m_drivetrainSubsystem,
-        traj,
-        () -> m_drivetrainSubsystem.getPose(),
-        m_drivetrainSubsystem.getKinematics(),
-        xController,
-        yController,
-        thetaController,
-        (states) -> {
-          m_drivetrainSubsystem.drive(m_drivetrainSubsystem.getKinematics().toChassisSpeeds(states));
-        },
-        m_drivetrainSubsystem
-    ).andThen(() -> m_drivetrainSubsystem.stop());
+	/**
+	 * Use this method to define your button->command mappings. Buttons can be
+	 * created by
+	 * instantiating a {@link GenericHID} or one of its subclasses ({@link
+	 * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+	 * it to a {@link
+	 * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+	 */
+	private void configureButtonBindings() {
+		// Back button zeros the gyroscope
+		/*
+		 * new Button(m_controller::getBackButton)
+		 * // No requirements because we don't need to interrupt anything
+		 * .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
+		 */
 
-    return autonomousCommand;
-  }
+		JoystickButton xboxAButton = new JoystickButton(m_controller, Constants.XBOX_A); // buton A
+		xboxAButton.whenPressed(new ToggleFieldRelative(m_driveTrain));
+		// when button A is pressed make a new toggle command to toggle mode
+	}
 
-  public Command getDriveCommand(){
-    // The controls are for field-oriented driving:
-    // Left stick Y axis -> forward and backwards movement
-    // Left stick X axis -> left and right movement
-    // Right stick X axis -> rotation
-    return new Drive(
-      m_drivetrainSubsystem,
-      () -> -modifyAxis(m_controller.getLeftY()) * DriveTrain.MAX_VELOCITY_METERS_PER_SECOND,
-      () -> -modifyAxis(m_controller.getLeftX()) * DriveTrain.MAX_VELOCITY_METERS_PER_SECOND,
-      () -> -modifyAxis(m_controller.getRightX()) * DriveTrain.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
-  }
+	public Command getDriveCommand() {
+		// The controls are for field-oriented driving:
+		// Left stick Y axis -> forward and backwards movement
+		// Left stick X axis -> left and right movement
+		// Right stick X axis -> rotation
+		return new Drive(
+				m_driveTrain,
+				() -> -modifyAxis(m_controller.getLeftY()) * DriveTrain.MAX_VELOCITY_METERS_PER_SECOND,
+				() -> -modifyAxis(m_controller.getLeftX()) * DriveTrain.MAX_VELOCITY_METERS_PER_SECOND,
+				() -> -modifyAxis(m_controller.getRightX()) * DriveTrain.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+	}
 
-  private static double deadband(double value, double deadband) {
-    if (Math.abs(value) > deadband) {
-      if (value > 0.0) {
-        return (value - deadband) / (1.0 - deadband);
-      } else {
-        return (value + deadband) / (1.0 - deadband);
-      }
-    } else {
-      return 0.0;
-    }
-  }
+	private static double deadband(double value, double deadband) {
+		if (Math.abs(value) > deadband) {
+			if (value > 0.0) {
+				return (value - deadband) / (1.0 - deadband);
+			} else {
+				return (value + deadband) / (1.0 - deadband);
+			}
+		} else {
+			return 0.0;
+		}
+	}
 
-  private static double modifyAxis(double value) {
-    // Deadband
-    value = deadband(value, 0.05);
+	private static double modifyAxis(double value) {
+		// Deadband
+		value = deadband(value, 0.05);
 
-    // Square the axis
-    value = Math.copySign(value * value, value);
+		// Square the axis
+		value = Math.copySign(value * value, value);
 
-    return value;
-  }
+		return value;
+	}
+
+	public DriveTrain getDriveTrain() {
+		return m_driveTrain;
+	}
 }
