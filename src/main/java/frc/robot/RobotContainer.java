@@ -31,7 +31,6 @@ public class RobotContainer {
   private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
 
   private final XboxController m_controller = new XboxController(0);
-  final JoystickButton m_toggleButton = new JoystickButton(m_controller, 9);
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
