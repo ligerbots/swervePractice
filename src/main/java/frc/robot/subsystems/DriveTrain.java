@@ -217,7 +217,7 @@ public class DriveTrain extends SubsystemBase {
 	 */
 	public void setPose(Pose2d pose) {
 		// zeroGyroscope(); resetPosition says not to reset gyro
-		m_odometry.resetPosition(pose, getHeading());
+		m_odometry.resetPosition(pose, getGyroscopeRotation());
 	}
 
 	public Rotation2d getHeading() {
