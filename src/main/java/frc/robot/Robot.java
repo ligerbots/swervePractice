@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.io.File;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  private SendableChooser<String> m_chosenTrajectory = new SendableChooser<>();
+  private SendableChooser<Command> m_chosenTrajectory = new SendableChooser<>();
   private RobotContainer m_robotContainer;
 
   /**
@@ -32,14 +30,10 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    m_chosenTrajectory.setDefaultOption("drive_1m", "drive_1m");
-    
-    // add all paths in pathplanner as options for swerve trajectory following
-    for(File file : new File("src/main/deploy/pathplanner").listFiles()){
-      String name = file.getName().substring(0, file.getName().indexOf("."));
-      m_chosenTrajectory.addOption(name, name);
-    }
-    
+    m_chosenTrajectory.setDefaultOption("drive_1m", m_robotContainer.getDriveTrain().getTrajectoryFollowingCommand("drive_1m"));
+    m_chosenTrajectory.addOption("drive_and_slide", m_robotContainer.getDriveTrain().getTrajectoryFollowingCommand("drive_and_slide"));
+    m_chosenTrajectory.addOption("drive_and_turn", m_robotContainer.getDriveTrain().getTrajectoryFollowingCommand("drive_and_turn"));
+    m_chosenTrajectory.addOption("Test", m_robotContainer.getDriveTrain().getTrajectoryFollowingCommand("Test"));
     SmartDashboard.putData("Chosen Trajectory", m_chosenTrajectory);
   }
 
@@ -69,7 +63,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getDriveTrain().getTrajectoryFollowingCommand(m_chosenTrajectory.getSelected());
+    m_autonomousCommand = m_chosenTrajectory.getSelected();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
