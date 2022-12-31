@@ -19,6 +19,7 @@ import frc.robot.commands.Drive;
 import frc.robot.commands.ToggleFieldRelative;
 import frc.robot.commands.FollowTrajectory;
 import frc.robot.subsystems.DriveTrain;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -63,7 +64,11 @@ public class RobotContainer {
 		JoystickButton xboxAButton = new JoystickButton(m_controller, Constants.XBOX_A); // buton A
 		xboxAButton.whenPressed(new ToggleFieldRelative(m_driveTrain));
 		// when button A is pressed make a new toggle command to toggle mode
-	}
+
+    	JoystickButton xboxXButton = new JoystickButton(m_controller, 2); //button X, not sure which number to put for button
+    	xboxXButton.whenPressed(new InstantCommand(m_driveTrain::togglePrecisionMode, m_driveTrain));
+    	//inline command to toggle precision mode when button X is pressed
+		}
 
 	public Command getDriveCommand() {
 		// The controls are for field-oriented driving:

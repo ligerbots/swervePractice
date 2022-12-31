@@ -41,10 +41,13 @@ public class DriveTrain extends SubsystemBase {
 	 * This can be reduced to cap the robot's maximum speed. Typically, this is
 	 * useful during initial testing of the robot.
 	 */
-	public static final double MAX_VOLTAGE = 12.0;
+	public static double MAX_VOLTAGE = 12.0;
+	//removed final
 
 	private boolean m_fieldRelative = true; // var that controls if the robot is in field relative or robot centric mode
 	// if var = true, then robot is in field relative mode
+	private boolean m_precisionMode = false; //var that determines precision or non precision mode
+ 	//if var = true, then robot is in precision mode
 
 	// FIXME Measure the drivetrain's maximum velocity or calculate the theoretical.
 	// The formula for calculating the theoretical maximum velocity is:
@@ -243,6 +246,21 @@ public class DriveTrain extends SubsystemBase {
 
 	public void toggleFieldRelative() { // flips mode of robot
 		m_fieldRelative = !m_fieldRelative;
+	}
+
+	public boolean getPrecisionMode() { //gets if in precision mode
+		return m_precisionMode;
+	}
+	  
+	public void togglePrecisionMode() { //toggles precision mode of robot
+		m_precisionMode = !m_precisionMode;
+	}
+	  
+	public void setMaxVoltage2() { //sets max voltage to 2.0
+		MAX_VOLTAGE = 2.0;
+	}
+	public void setMaxVoltage12() { //sets max voltage to 12.0
+		MAX_VOLTAGE = 12.0;
 	}
 
 	// get the swerveModuleState manually
