@@ -65,7 +65,7 @@ public class RobotContainer {
 		xboxAButton.whenPressed(new ToggleFieldRelative(m_driveTrain));
 		// when button A is pressed make a new toggle command to toggle mode
 
-    	JoystickButton xboxXButton = new JoystickButton(m_controller, 2); //button X, not sure which number to put for button
+    	JoystickButton xboxXButton = new JoystickButton(m_controller, Constants.XBOX_X); //button X
     	xboxXButton.whenPressed(new InstantCommand(m_driveTrain::togglePrecisionMode, m_driveTrain));
     	//inline command to toggle precision mode when button X is pressed
 		}
