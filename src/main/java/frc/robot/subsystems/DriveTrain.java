@@ -35,19 +35,14 @@ import frc.robot.subsystems.DriveTrain;
 import static frc.robot.Constants.*;
 
 public class DriveTrain extends SubsystemBase {
-	/**
-	 * The maximum voltage that will be delivered to the drive motors.
-	 * <p>
-	 * This can be reduced to cap the robot's maximum speed. Typically, this is
-	 * useful during initial testing of the robot.
-	 */
-	public static double MAX_VOLTAGE = 12.0;
-	//removed final
 
-	private boolean m_fieldRelative = true; // var that controls if the robot is in field relative or robot centric mode
+	private double m_maxVoltage = Constants.MAX_VOLTAGE; //var that acts as max voltage for drivetrain
+
 	// if var = true, then robot is in field relative mode
+	private boolean m_fieldRelative = true; // var that controls if the robot is in field relative or robot centric mode
+
+	//if var = true, then robot is in precision mode
 	private boolean m_precisionMode = false; //var that determines precision or non precision mode
- 	//if var = true, then robot is in precision mode
 
 	// FIXME Measure the drivetrain's maximum velocity or calculate the theoretical.
 	// The formula for calculating the theoretical maximum velocity is:
@@ -189,7 +184,7 @@ public class DriveTrain extends SubsystemBase {
 
 		SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
 		for (int i = 0; i < 4; i++) {
-			m_swerveModules[i].set(states[i].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+			m_swerveModules[i].set(states[i].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * m_maxVoltage,
 					states[i].angle.getRadians());
 		}
 	}
@@ -247,20 +242,10 @@ public class DriveTrain extends SubsystemBase {
 	public void toggleFieldRelative() { // flips mode of robot
 		m_fieldRelative = !m_fieldRelative;
 	}
-
-	public boolean getPrecisionMode() { //gets if in precision mode
-		return m_precisionMode;
-	}
 	  
 	public void togglePrecisionMode() { //toggles precision mode of robot
 		m_precisionMode = !m_precisionMode;
-	}
-	  
-	public void setMaxVoltage2() { //sets max voltage to 2.0
-		MAX_VOLTAGE = 2.0;
-	}
-	public void setMaxVoltage12() { //sets max voltage to 12.0
-		MAX_VOLTAGE = 12.0;
+		m_maxVoltage = m_precisionMode ? Constants.PRECISION_MAX_VOLTAGE : Constants.MAX_VOLTAGE;
 	}
 
 	// get the swerveModuleState manually

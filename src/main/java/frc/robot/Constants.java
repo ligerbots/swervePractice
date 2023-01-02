@@ -55,6 +55,16 @@ public final class Constants {
     public static final double Y_PID_CONTROLLER_P = 0.2;
     public static final double THETA_PID_CONTROLLER_P = 8.0;
 
+    // max voltages
+    /**
+	 * The maximum voltage that will be delivered to the drive motors.
+	 * <p>
+	 * This can be reduced to cap the robot's maximum speed. Typically, this is
+	 * useful during initial testing of the robot.
+	 */
+	public static final double MAX_VOLTAGE = 12.0; //default
+    public static final double PRECISION_MAX_VOLTAGE = 2.0; //precision mode
+
     // Xbox button mapping
     public static final int XBOX_A = 1;
     public static final int XBOX_B = 2;

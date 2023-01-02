@@ -61,13 +61,15 @@ public class RobotContainer {
 		 * .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
 		 */
 
-		JoystickButton xboxAButton = new JoystickButton(m_controller, Constants.XBOX_A); // buton A
-		xboxAButton.whenPressed(new ToggleFieldRelative(m_driveTrain));
+		// button A
+		JoystickButton xboxAButton = new JoystickButton(m_controller, Constants.XBOX_A); 
 		// when button A is pressed make a new toggle command to toggle mode
+		xboxAButton.whenPressed(new ToggleFieldRelative(m_driveTrain));
 
-    	JoystickButton xboxXButton = new JoystickButton(m_controller, Constants.XBOX_X); //button X
-    	xboxXButton.whenPressed(new InstantCommand(m_driveTrain::togglePrecisionMode, m_driveTrain));
-    	//inline command to toggle precision mode when button X is pressed
+		// button X
+    	JoystickButton xboxXButton = new JoystickButton(m_controller, Constants.XBOX_X); 
+		//inline command to toggle precision mode when button X is pressed
+    	xboxXButton.whenPressed(new InstantCommand(m_driveTrain::togglePrecisionMode));
 		}
 
 	public Command getDriveCommand() {

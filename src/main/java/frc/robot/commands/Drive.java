@@ -44,17 +44,11 @@ public class Drive extends CommandBase {
                 )
             );
         }
-        if (m_driveTrain.getPrecisionMode() == true){ //if in precision mode
-            m_driveTrain.setMaxVoltage2(); //set max voltage to 2
-        } else { //if not in precision mode
-            m_driveTrain.setMaxVoltage12(); //set max voltage to 12
-        }
  
     }
 
     @Override
     public void end(boolean interrupted) {
         m_driveTrain.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
-        m_driveTrain.setMaxVoltage12(); //if in precision mode when ended, set back to normal
     }
 }
