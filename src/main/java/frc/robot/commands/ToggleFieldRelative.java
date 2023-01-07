@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.DriveTrain;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -14,16 +14,16 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 //this command changes back and forth between field relative mode and not field relative mode(robot centric)
 public class ToggleFieldRelative extends InstantCommand 
 {
-  private final DrivetrainSubsystem m_drivetrainSubsystem;
-  public ToggleFieldRelative(DrivetrainSubsystem drivetrainSubsystem) {
+  private final DriveTrain m_driveTrain;
+  public ToggleFieldRelative(DriveTrain driveTrain) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_drivetrainSubsystem = drivetrainSubsystem;
+    m_driveTrain = driveTrain;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_drivetrainSubsystem.toggleFieldRelative(); //toggle drive mode
+    m_driveTrain.toggleFieldRelative(); //toggle drive mode
   }
 
   

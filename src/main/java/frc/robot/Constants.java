@@ -50,4 +50,37 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 8;
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 12;
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(91.8);
+
+    public static final double X_PID_CONTROLLER_P = 0.2;
+    public static final double Y_PID_CONTROLLER_P = 0.2;
+    public static final double THETA_PID_CONTROLLER_P = 8.0;
+
+    // max voltages
+    /**
+	 * The maximum voltage that will be delivered to the drive motors.
+	 * <p>
+	 * This can be reduced to cap the robot's maximum speed. Typically, this is
+	 * useful during initial testing of the robot.
+	 */
+	public static final double MAX_VOLTAGE = 12.0; //default
+    public static final double PRECISION_MAX_VOLTAGE = 2.0; //precision mode
+
+    // Xbox button mapping
+    public static final int XBOX_A = 1;
+    public static final int XBOX_B = 2;
+    public static final int XBOX_X = 3;
+    public static final int XBOX_Y = 4;
+
+    // bumpers
+    public static final int XBOX_LB = 5;
+    public static final int XBOX_RB = 6;
+    
+    public static final int XBOX_BACK = 7;
+    public static final int XBOX_START = 8;
+
+    // joy stick button
+    public static final int XBOX_JL = 9;
+    public static final int XBOX_JR = 10;
+
+
 }
